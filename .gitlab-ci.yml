@@ -17,23 +17,17 @@ before_script:
 - go get -d
 - tree /var/go -d -L 4 || true
 
-vet_code:
+vet:
   stage: test
   script:
   - diff <(echo -n) <(gofmt -s -d .)
   - go vet ./...
 
-ineffassign:
-  stage: test
-  script:
-  - go get github.com/gordonklaus/ineffassign
-  - /var/go/theirs/bin/ineffassign .
-
 lint:
   stage: test
   script:
-  - go get github.com/golang/lint/golint
-  - /var/go/theirs/bin/golint ./...
+  - /var/go/provided/bin/ineffassign .
+  - /var/go/provided/bin/golint ./...
 
 unittests:
   stage: test
