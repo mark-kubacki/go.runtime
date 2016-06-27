@@ -2,7 +2,7 @@ stages:
 - test
 
 cache:
-  group: go-blitznote-shared
+  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
   paths:
   - _vendor-cache/
 
@@ -17,25 +17,25 @@ before_script:
 - go get -d
 - tree /var/go -d -L 4 || true
 
-test_style:
+vet_code:
   stage: test
   script:
   - diff <(echo -n) <(gofmt -s -d .)
   - go vet ./...
 
-test_ineff:
+ineffassign:
   stage: test
   script:
   - go get github.com/gordonklaus/ineffassign
   - /var/go/theirs/bin/ineffassign .
 
-test_lint:
+lint:
   stage: test
   script:
   - go get github.com/golang/lint/golint
   - /var/go/theirs/bin/golint ./...
 
-test_unittest:
+unittests:
   stage: test
   script:
   - go test -v ./...
