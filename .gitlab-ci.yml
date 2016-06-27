@@ -1,0 +1,41 @@
+stages:
+- test
+
+cache:
+  group: go-blitznote-shared
+  paths:
+  - _vendor-cache/
+
+before_script:
+- mkdir -p _vendor-cache /var/go/ours
+- ln -s "$(pwd -P)/_vendor-cache" /var/go/theirs
+- export GOPATH=/var/go/theirs:/var/go/ours
+- export GODIR=/var/go/ours/src/blitznote.com/src/go.runtime
+- mkdir -p "$(dirname "$GODIR")"
+- ln -sfv "$(pwd -P)" "$GODIR"
+- cd "$GODIR"
+- go get -d
+- tree /var/go -d -L 4 || true
+
+test_style:
+  stage: test
+  script:
+  - diff <(echo -n) <(gofmt -s -d .)
+  - go vet ./...
+
+test_ineff:
+  stage: test
+  script:
+  - go get github.com/gordonklaus/ineffassign
+  - /var/go/theirs/bin/ineffassign .
+
+test_lint:
+  stage: test
+  script:
+  - go get github.com/golang/lint/golint
+  - /var/go/theirs/bin/golint ./...
+
+test_unittest:
+  stage: test
+  script:
+  - go test -v ./...
