@@ -15,12 +15,12 @@ before_script:
 - ln -sfv "$(pwd -P)" "$GODIR"
 - cd "$GODIR"
 - go get -d
-- tree /var/go -d -L 4 || true
+- tree -d -l -L 5 -- /var/go/ours/src /var/go/theirs/src || true
 
 vet:
   stage: test
   script:
-  - diff <(echo -n) <(gofmt -s -d .)
+  - diff <(echo -n) <(gofmt -s -d $(find . -type f -name '*.go' -not -path "./_*"))
   - go vet ./...
 
 lint:
