@@ -3,8 +3,6 @@ package runtime // import "blitznote.com/src/go.runtime"
 import (
 	"syscall"
 	"unsafe"
-
-	"golang.org/x/sys/unix"
 )
 
 // NumCPU queries the system for the count of threads available
@@ -14,10 +12,10 @@ import (
 // Returns 0 on errors. Use |runtime.NumCPU| in that case.
 func NumCPU() int {
 	// Gets the affinity mask for this process.
-	pid, _, _ := syscall.RawSyscall(unix.SYS_GETPID, 0, 0, 0)
+	pid, _, _ := syscall.RawSyscall(syscall.SYS_GETPID, 0, 0, 0)
 
 	var mask [1024 / 64]uintptr
-	_, _, err := syscall.RawSyscall(unix.SYS_SCHED_GETAFFINITY, pid, uintptr(len(mask)*8), uintptr(unsafe.Pointer(&mask[0])))
+	_, _, err := syscall.RawSyscall(syscall.SYS_SCHED_GETAFFINITY, pid, uintptr(len(mask)*8), uintptr(unsafe.Pointer(&mask[0])))
 	if err != 0 {
 		return 0
 	}
