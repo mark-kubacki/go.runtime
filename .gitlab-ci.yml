@@ -2,7 +2,7 @@ stages:
 - test
 
 cache:
-  key: "$CI_BUILD_STAGE/$CI_BUILD_REF_NAME"
+  key: "$CI_BUILD_STAGE-$CI_BUILD_REF_NAME"
   paths:
   - _vendor-cache/
 
