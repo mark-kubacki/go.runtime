@@ -1,4 +1,4 @@
-// +build !amd64
+// +build !amd64 !go1.9
 
 package runtime // import "blitznote.com/src/go.runtime"
 
